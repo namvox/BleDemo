@@ -1,4 +1,6 @@
 package me.namvo.bledemo.scanning;
 
-public class ScanningActivity {
+import me.namvo.bledemo.BaseActivity;
+
+public class ScanningActivity extends BaseActivity {
 }
