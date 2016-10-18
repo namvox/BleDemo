@@ -15,7 +15,6 @@ import org.robolectric.annotation.Config;
 import java.util.UUID;
 
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
@@ -27,9 +26,9 @@ import rx.subjects.PublishSubject;
 public class RxBleClientMockTest {
 
     private RxBleClientMock rxBleClient;
-    private UUID characteristicNotifiedUUID;
-    private PublishSubject characteristicNotificationSubject;
-    private UUID characteristicUUID;
+    UUID characteristicNotifiedUUID;
+    PublishSubject characteristicNotificationSubject;
+    UUID characteristicUUID;
     @Before
     public void before() {
         final UUID serviceUUID = UUID.fromString("00001234-0000-0000-8000-000000000000");
@@ -122,7 +121,10 @@ public class RxBleClientMockTest {
                         throwable.printStackTrace();
                     }
                 });
-        stateChangesSubscribe.assertValues(RxBleConnection.RxBleConnectionState.DISCONNECTED, RxBleConnection.RxBleConnectionState.CONNECTING, RxBleConnection.RxBleConnectionState.CONNECTED);
+        stateChangesSubscribe.assertValues(RxBleConnection.RxBleConnectionState.DISCONNECTED,
+                RxBleConnection.RxBleConnectionState.CONNECTING,
+                RxBleConnection.RxBleConnectionState.CONNECTED,
+                RxBleConnection.RxBleConnectionState.DISCONNECTED);
     }
 
     @Test
@@ -223,15 +225,14 @@ public class RxBleClientMockTest {
                         return new String(bytes);
                     }
                 })
-                .doOnSubscribe(new Action0() {
+                .doOnNext(new Action1<String>() {
                     @Override
-                    public void call() {
+                    public void call(String s) {
                         characteristicNotificationSubject.onNext("Hi".getBytes());
                     }
                 })
                 .subscribe(subscriber);
 
-        characteristicNotificationSubject.onNext("Hello".getBytes());
-        notificationSubscriber.assertValues("Hello");
+        notificationSubscriber.assertValue("Hi");
     }
 }
