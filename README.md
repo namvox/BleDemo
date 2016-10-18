@@ -2,7 +2,7 @@
 This repo shows a power of a combination of **RxAndroidBle** and **RxBleClienMock**.
 
 * **ScanActivity** displays a available device from **RxBleClientMock**.
-* When user click to the mock device, the app will be navigated to **DeviceActivity** which is supposed to allow user can type a message and send to the device.
+* When user click to the mock device, the app will navigate to **DeviceActivity** which is supposed to allow user can type a message and send to the device.
 
 ##Send - Receive flow
 Assumption: We have two devices called A and B.
