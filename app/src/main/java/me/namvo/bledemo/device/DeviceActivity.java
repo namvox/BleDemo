@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
@@ -34,6 +35,7 @@ public class DeviceActivity extends RxActivity {
         ActivityDeviceBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_device);
         dagger();
         binding.setViewModel(viewModel);
+        binding.executePendingBindings();
         viewModel.setEvent(bindUntilEvent(ActivityEvent.PAUSE));
 
         final boolean result = viewModel.setup(getIntent().getExtras().getString(BUNDLE_MAC_ADDRESS, ""));
@@ -46,6 +48,10 @@ public class DeviceActivity extends RxActivity {
                 }
             });
         }
+
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) binding.recyclerView.getLayoutManager();
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
     }
 
     private void dagger() {
