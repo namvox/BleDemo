@@ -23,6 +23,7 @@ import me.tatarka.bindingcollectionadapter.ItemView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
@@ -71,16 +72,15 @@ public class DeviceViewModel {
                         return rxBleConnection.setupNotification(characteristicNotifiedUUID);
                     }
                 })
-                .flatMap(new Func1<Observable<byte[]>, Observable<byte[]>>() {
+                .flatMap(new Func1<Observable<byte[]>, Observable<String>>() {
                     @Override
-                    public Observable<byte[]> call(Observable<byte[]> observable) {
-                        return observable;
-                    }
-                })
-                .map(new Func1<byte[], String>() {
-                    @Override
-                    public String call(byte[] bytes) {
-                        return new String(bytes);
+                    public Observable<String> call(Observable<byte[]> observable) {
+                        return observable.map(new Func1<byte[], String>() {
+                            @Override
+                            public String call(byte[] bytes) {
+                                return new String(bytes);
+                            }
+                        });
                     }
                 })
                 .doOnNext(new Action1<String>() {
@@ -107,21 +107,21 @@ public class DeviceViewModel {
                         return new String(bytes);
                     }
                 })
-                .compose(transformer)
-                .cast(String.class)
-                .subscribe(new Action1<String>() {
+                .doOnNext(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        characteristicNotificationSubject.onNext(s);
+                        characteristicNotificationSubject.onNext(s.getBytes());
+                        DeviceViewModel.this.text.set("");
                     }
-                }, new Action1<Throwable>() {
+                })
+                .compose(transformer)
+                .subscribe(Actions.empty(), new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                     }
                 });
     }
-
     public Observable<RxBleConnection.RxBleConnectionState> repair() {
         return device.observeConnectionStateChanges()
                 .observeOn(AndroidSchedulers.mainThread())
