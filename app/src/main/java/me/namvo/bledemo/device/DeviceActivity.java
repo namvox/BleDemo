@@ -34,16 +34,10 @@ public class DeviceActivity extends RxActivity {
         ActivityDeviceBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_device);
         dagger();
         binding.setViewModel(viewModel);
+        viewModel.setEvent(bindUntilEvent(ActivityEvent.PAUSE));
 
         final boolean result = viewModel.setup(getIntent().getExtras().getString(BUNDLE_MAC_ADDRESS, ""));
         if (result) {
-//            viewModel.repair().compose(bindUntilEvent(ActivityEvent.DESTROY))
-//            .subscribe(Actions.empty(), new Action1<Throwable>() {
-//                @Override
-//                public void call(Throwable throwable) {
-//                    throwable.printStackTrace();
-//                }
-//            });
             viewModel.connect().compose(bindUntilEvent(ActivityEvent.PAUSE))
             .subscribe(Actions.empty(), new Action1<Throwable>() {
                 @Override

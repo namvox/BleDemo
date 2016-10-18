@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="viewModel"
-            type="me.namvo.bledemo.device.DeviceViewModel"/>
+            type="me.namvo.bledemo.device.DeviceViewModel" />
+
+        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
     </data>
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.status}"/>
+            android:text="@{viewModel.status}" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:foreground="?selectableItemBackground"
+            app:itemView="@{viewModel.messageView}"
+            app:items="@{viewModel.messages}"
+            app:layoutManager="@{LayoutManagers.linear()}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@={viewModel.text}" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{viewModel::send}"
+                android:text="@string/send" />
+        </LinearLayout>
     </LinearLayout>
 </layout>
