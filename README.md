@@ -7,7 +7,7 @@ This repo shows a power of a combination of **RxAndroidBle** and **RxBleClienMoc
 ##Send - Receive flow
 Assumption: We have two devices called A and B.
 
-* First, A writes a message to a charateristic of B. Concurrently, A listens to characteristic which B will notify.
+* First, A writes a message to a charateristic of B. Concurrently, A listens to the characteristic which B will notify.
 * Second, When B received the message on the characteristic which A sent. Then, B will notify to the listener which A has registered.
 * Finally, B received a message from A, and A received a notification from B.
 
