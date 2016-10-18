@@ -7,6 +7,7 @@ import com.polidea.rxandroidble.mockrxandroidble.RxBleClientMock;
 
 import java.util.UUID;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -29,14 +30,33 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public RxBleClient rxBleClient() {
+    public  PublishSubject publishSubject() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @Singleton
+    @Named("NotifiedUUID")
+    public UUID characteristicNotifiedUUID() {
+        return UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb");
+    }
+
+    @Provides
+    @Singleton
+    @Named("UUID")
+    public UUID characteristicUUID() {
+        return UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb");
+    }
+
+    @Provides
+    @Singleton
+    public RxBleClient rxBleClient(final PublishSubject characteristicNotificationSubject,
+                                   @Named("NotifiedUUID") final UUID characteristicNotifiedUUID,
+                                   @Named("UUID") final UUID characteristicUUID) {
         final UUID serviceUUID = UUID.fromString("00001234-0000-0000-8000-000000000000");
-        final UUID characteristicUUID = UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb");
-        final UUID characteristicNotifiedUUID = UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb");
         final byte[] characteristicData = "Polidea".getBytes();
         final UUID descriptorUUID = UUID.fromString("00001337-0000-1000-8000-00805f9b34fb");
         final byte[] descriptorData = "Config".getBytes();
-        final PublishSubject characteristicNotificationSubject = PublishSubject.create();
         return new RxBleClientMock.Builder()
                 .addDevice(
                         new RxBleClientMock.DeviceBuilder()
